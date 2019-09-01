@@ -1,0 +1,47 @@
+<div>
+  <div *ngIf="walletState.isConnected; else connectButton" class="space-y-2">
+    <div class="flex items-center gap-2">
+      <span class="text-sm text-gray-600">Connected:</span>
+      <span class="font-mono text-sm">{{ shortenAddress(walletState.address) }}</span>
+    </div>
+    <div class="text-xs px-2 py-1 rounded text-black w-fit" 
+      [class]="walletState.isSupportedNetwork ? 'bg-green-100' : 'bg-red-100'">{{ walletState.networkName }}
+    </div>
+    <button 
+      class="text-xs"
+      (click)="disconnect()"
+      title="Disconnect Wallet"
+    >
+      Disconnect
+    </button>
+  </div>
+
+  <ng-template #connectButton>
+    <button 
+      class="btn btn-primary" 
+      (click)="connectWallet()"
+      [disabled]="isConnecting"
+    >
+      <span *ngIf="isConnecting" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+      {{ isConnecting ? 'Connecting...' : 'Connect Wallet' }}
+    </button>
+  </ng-template>
+
+  <div *ngIf="walletState.error" class="mt-2">
+    <span class="text-red-600 text-sm">{{ walletState.error }}</span>
+  </div>
+
+  <div *ngIf="!walletState.isSupportedNetwork && walletState.isConnected" class="mt-3">
+    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+      <strong>Warning:</strong> You're connected to an unsupported network. 
+      Please switch to a supported network.
+      <button 
+        class="btn btn-sm btn-primary ml-2" 
+        (click)="switchToMainnet()"
+        title="Switch to Ethereum Mainnet"
+      >
+        Switch to Mainnet
+      </button>
+    </div>
+  </div>
+</div>
